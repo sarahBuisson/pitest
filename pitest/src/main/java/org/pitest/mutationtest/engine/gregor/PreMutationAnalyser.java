@@ -13,21 +13,26 @@ public class PreMutationAnalyser extends ClassVisitor {
 
   private final PremutationClassInfo classInfo = new PremutationClassInfo();
   private final Set<String>          loggingClasses;
+  private final ClassContext      context;
 
-  public PreMutationAnalyser(final Set<String> loggingClasses) {
+  public PreMutationAnalyser(final Set<String> loggingClasses, ClassContext context) {
     super(Opcodes.ASM5);
     this.loggingClasses = loggingClasses;
+    this.context = context;
   }
 
   @Override
   public void visit(final int version, final int access, final String name,
-      final String signature, final String superName, final String[] interfaces) {
-
+                    final String signature, final String superName, final String[] interfaces) {
+    super.visit(version, access, name, signature, superName, interfaces);
+    this.context.registerClass(new ClassInfo(version, access, name, signature,
+            superName, interfaces));
   }
 
   @Override
   public void visitSource(final String source, final String debug) {
-
+    super.visitSource(source, debug);
+    this.context.registerSourceFile(source);
   }
 
   @Override
@@ -63,7 +68,7 @@ public class PreMutationAnalyser extends ClassVisitor {
   @Override
   public MethodVisitor visitMethod(final int access, final String name,
       final String desc, final String signature, final String[] exceptions) {
-    return new PreMutationMethodAnalyzer(this.loggingClasses, this.classInfo);
+    return new PreMutationMethodAnalyzer(this.loggingClasses, this.classInfo, this.context);
   }
 
   @Override

@@ -14,6 +14,7 @@
  */
 package org.pitest.mutationtest.engine.gregor;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,6 +31,7 @@ class ClassContext implements BlockCounter {
 
   private ClassInfo                   classInfo;
   private String                      sourceFile;
+  private List<Integer> excludedLineNumbers = new ArrayList<Integer>();
 
   private Option<MutationIdentifier>  target       = Option.none();
   private final List<MutationDetails> mutations    = new ArrayList<MutationDetails>();
@@ -76,6 +78,42 @@ class ClassContext implements BlockCounter {
 
   public void registerSourceFile(final String source) {
     this.sourceFile = source;
+    registerExcludedLine();
+  }
+
+  private void registerExcludedLine() {
+    String packageName = getPackageName();
+    excludedLineNumbers = new ArrayList<Integer>();
+    System.out.println("registerExcludedLine"+packageName+sourceFile);
+    if(sourceFile != null && packageName != null) {
+      File f = new File("src/main/java/" + packageName + "/" + sourceFile);
+      try {
+        FileReader fileReader = new FileReader(f);
+        BufferedReader br = new BufferedReader(fileReader);
+        String line;
+        int lineNumber = 0;
+        while ((line = br.readLine()) != null) {
+          System.out.println(line);
+          if (line.contains("@"))
+            excludedLineNumbers.add(lineNumber);
+          lineNumber++;
+        }
+        br.close();
+        fileReader.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  private String getPackageName() {
+    if (this.getClassInfo() == null)
+      return null;
+
+    String name = this.getClassInfo().getName();
+    if (name != null)
+      return name.substring(0, name.lastIndexOf("/"));
+    return null;
   }
 
   public boolean shouldMutate(final MutationIdentifier newId) {
@@ -125,4 +163,12 @@ class ClassContext implements BlockCounter {
     return this.blockCounter.isWithinFinallyBlock();
   }
 
+  /**
+   * Getter for property 'excludedLineNumbers'.
+   *
+   * @return Value for property 'excludedLineNumbers'.
+   */
+  public List<Integer> getExcludedLineNumbers() {
+    return excludedLineNumbers;
+  }
 }

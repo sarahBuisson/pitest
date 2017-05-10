@@ -47,7 +47,7 @@ public abstract class AbstractJumpMutator extends MethodVisitor {
 
   @Override
   public void visitJumpInsn(final int opcode, final Label label) {
-    if (canMutate(opcode)) {
+    if (canMutate(opcode) && !this.context.isCurrentLineExclude()) {
       createMutationForJumpInsn(opcode, label);
     } else {
       this.mv.visitJumpInsn(opcode, label);

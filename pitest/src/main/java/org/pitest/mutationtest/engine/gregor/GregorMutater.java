@@ -90,7 +90,7 @@ public class GregorMutater implements Mutater {
   private Collection<MutationDetails> findMutationsForBytes(
       final ClassContext context, final byte[] classToMutate) {
 
-    final PremutationClassInfo classInfo = performPreScan(classToMutate);
+    final PremutationClassInfo classInfo = performPreScan(context, classToMutate);
 
     final ClassReader first = new ClassReader(classToMutate);
     final NullVisitor nv = new NullVisitor();
@@ -102,10 +102,10 @@ public class GregorMutater implements Mutater {
     return this.inlinedCodeDetector.process(context.getCollectedMutations());
   }
 
-  private PremutationClassInfo performPreScan(final byte[] classToMutate) {
+  private PremutationClassInfo performPreScan(final ClassContext context,final byte[] classToMutate) {
     final ClassReader reader = new ClassReader(classToMutate);
 
-    final PreMutationAnalyser an = new PreMutationAnalyser(this.loggingClasses);
+    final PreMutationAnalyser an = new PreMutationAnalyser(this.loggingClasses, context);
     reader.accept(an, 0);
     return an.getClassInfo();
 
@@ -120,7 +120,7 @@ public class GregorMutater implements Mutater {
     final Option<byte[]> bytes = this.byteSource.getBytes(id.getClassName()
         .asJavaName());
 
-    final PremutationClassInfo classInfo = performPreScan(bytes.value());
+    final PremutationClassInfo classInfo = performPreScan(context, bytes.value());
 
     final ClassReader reader = new ClassReader(bytes.value());
     final ClassWriter w = new ComputeClassWriter(this.byteSource,

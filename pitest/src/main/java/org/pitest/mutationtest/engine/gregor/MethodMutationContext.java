@@ -1,6 +1,7 @@
 package org.pitest.mutationtest.engine.gregor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.pitest.mutationtest.engine.Location;
@@ -76,6 +77,16 @@ class MethodMutationContext implements MutationContext, InstructionCounter {
   @Override
   public ClassInfo getClassInfo() {
     return this.classContext.getClassInfo();
+  }
+
+
+  public List<Integer> getExcludedLineNumbers() {
+    return this.classContext.getExcludedLineNumbers();
+  }
+
+  @Override
+  public boolean isCurrentLineExclude() {
+    return getExcludedLineNumbers().contains(lastLineNumber);
   }
 
   @Override

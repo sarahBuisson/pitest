@@ -18,4 +18,5 @@ public interface MutationContext extends BlockCounter {
 
   void enableMutatations(String reason);
 
+  boolean isCurrentLineExclude();
 }
