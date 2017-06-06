@@ -511,4 +511,21 @@ public class PitMojoIT {
             .contains("<a href=\"pit-reports/index.html\" title=\"PIT Test Report\">PIT Test Report</a>"));
   }
 
+  @Test
+  public void shouldWorkWithLombok() throws Exception {
+    File testDir = prepare("/pit-lombok");
+
+    verifier.addCliOption("-DtimeoutConstant=10000");
+    verifier.executeGoal("test");
+    verifier.executeGoal("org.pitest:pitest-maven:mutationCoverage");
+    System.out.println("e");
+    System.out.println(testDir);
+    System.out.println(testDir.getAbsoluteFile());
+    String actual = readResults(testDir);
+    assertThat(actual)
+            .contains(
+                    "<mutation detected='true' status='KILLED'><sourceFile>MyRequest.java</sourceFile><mutatedClass>com.example.MyRequest</mutatedClass><mutatedMethod>validate</mutatedMethod>");
+    assertThat(actual).doesNotContain("<mutatedMethod>equals</mutatedMethod");
+    assertThat(actual).doesNotContain("<mutatedMethod>hashCode</mutatedMethod");
+  }
 }
