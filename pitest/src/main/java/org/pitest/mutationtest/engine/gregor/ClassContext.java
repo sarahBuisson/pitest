@@ -15,10 +15,12 @@
 package org.pitest.mutationtest.engine.gregor;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import org.pitest.functional.F;
 import org.pitest.functional.FCollection;
 import org.pitest.functional.Option;
@@ -78,29 +80,26 @@ class ClassContext implements BlockCounter {
 
   public void registerSourceFile(final String source) {
     this.sourceFile = source;
-    registerExcludedLine();
+    excludedLineNumbers = new ArrayList<Integer>();
   }
 
-  private void registerExcludedLine() {
+  public void registerExcludedGeneratedLines() {
     String packageName = getPackageName();
-    excludedLineNumbers = new ArrayList<Integer>();
-    System.out.println("registerExcludedLine"+packageName+sourceFile);
-    if(sourceFile != null && packageName != null) {
+    if (sourceFile != null && packageName != null) {
       File f = new File("src/main/java/" + packageName + "/" + sourceFile);
       try {
-        FileReader fileReader = new FileReader(f);
-        BufferedReader br = new BufferedReader(fileReader);
-        String line;
-        int lineNumber = 0;
-        while ((line = br.readLine()) != null) {
-          System.out.println(line);
-          if (line.contains("@"))
-            excludedLineNumbers.add(lineNumber);
-          lineNumber++;
-        }
-        br.close();
-        fileReader.close();
-      } catch (IOException e) {
+        CompilationUnit cu = JavaParser.parse(f);
+
+        new VoidVisitorAdapter<Object>() {
+          @Override
+          public void visit(MarkerAnnotationExpr n, Object arg) {
+            super.visit(n, arg);
+            for (int i = n.getBeginLine(); i <= n.getEndLine(); i++) {
+              excludedLineNumbers.add(new Integer(i));
+            }
+          }
+        }.visit(JavaParser.parse(f), null);
+      } catch (Exception e) {
         e.printStackTrace();
       }
     }
