@@ -268,6 +268,13 @@ public class OptionsParserTest {
   }
 
   @Test
+  public void shouldParseExcludeGeneratedLines() {
+    final ReportOptions actual = parseAddingRequiredArgs("--excludeGeneratedLines",
+        "true");
+    assertTrue(actual.getExcludeGeneratedLines());
+  }
+
+  @Test
   public void shouldParseVerboseFlag() {
     final ReportOptions actual = parseAddingRequiredArgs("--verbose");
     assertTrue(actual.isVerbose());

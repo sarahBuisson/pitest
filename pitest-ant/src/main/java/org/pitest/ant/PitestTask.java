@@ -152,6 +152,10 @@ public class PitestTask extends Task { // NO_UCD (test only)
     this.setOption(ConfigOption.EXCLUDED_METHOD, value);
   }
 
+  public void setExcludeGeneratedLines(final String value) {
+    this.setOption(ConfigOption.EXCLUDE_GENERATED_LINES, value);
+  }
+
   public void setExcludedClasses(final String value) {
     this.setOption(ConfigOption.EXCLUDED_CLASSES, value);
   }

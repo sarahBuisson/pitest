@@ -31,17 +31,21 @@ import org.pitest.mutationtest.engine.gregor.blocks.BlockTrackingMethodDecorator
 class MutatingClassVisitor extends ClassVisitor {
 
   private final F<MethodInfo, Boolean>    filter;
+  private final boolean                   excludeGeneratedLines;
   private final ClassContext              context;
   private final Set<MethodMutatorFactory> methodMutators = new HashSet<MethodMutatorFactory>();
   private final PremutationClassInfo      classInfo;
 
   MutatingClassVisitor(final ClassVisitor delegateClassVisitor,
-      final ClassContext context, final F<MethodInfo, Boolean> filter,
+      final ClassContext context,
+      final F<MethodInfo, Boolean> filter,
+      final boolean excludeGeneratedLines,
       final PremutationClassInfo classInfo,
       final Collection<MethodMutatorFactory> mutators) {
     super(Opcodes.ASM5, delegateClassVisitor);
     this.context = context;
     this.filter = filter;
+    this.excludeGeneratedLines = excludeGeneratedLines;
     this.methodMutators.addAll(mutators);
     this.classInfo = classInfo;
   }
@@ -58,6 +62,9 @@ class MutatingClassVisitor extends ClassVisitor {
   public void visitSource(final String source, final String debug) {
     super.visitSource(source, debug);
     this.context.registerSourceFile(source);
+    if(this.excludeGeneratedLines) {
+      this.context.registerExcludedGeneratedLines();
+    }
   }
 
   @Override

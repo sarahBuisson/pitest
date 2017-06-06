@@ -12,11 +12,13 @@ import org.objectweb.asm.Opcodes;
 public class PreMutationAnalyser extends ClassVisitor {
 
   private final PremutationClassInfo classInfo = new PremutationClassInfo();
+  private final boolean excludeGeneratedLines;
   private final Set<String>          loggingClasses;
   private final ClassContext      context;
 
-  public PreMutationAnalyser(final Set<String> loggingClasses, ClassContext context) {
+  public PreMutationAnalyser(boolean excludeGeneratedLines, final Set<String> loggingClasses, ClassContext context) {
     super(Opcodes.ASM5);
+    this.excludeGeneratedLines = excludeGeneratedLines;
     this.loggingClasses = loggingClasses;
     this.context = context;
   }
@@ -33,6 +35,9 @@ public class PreMutationAnalyser extends ClassVisitor {
   public void visitSource(final String source, final String debug) {
     super.visitSource(source, debug);
     this.context.registerSourceFile(source);
+    if(this.excludeGeneratedLines) {
+      this.context.registerExcludedGeneratedLines();
+    }
   }
 
   @Override

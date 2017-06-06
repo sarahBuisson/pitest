@@ -63,7 +63,7 @@ public abstract class MutatorTestBase {
 
   protected void createTesteeWith(final Predicate<MethodInfo> filter,
       final MethodMutatorFactory... mutators) {
-    this.engine = new GregorMutater(new ClassPathByteArraySource(), filter,
+    this.engine = new GregorMutater(new ClassPathByteArraySource(), filter, false,
         Arrays.asList(mutators), filteredClasses(), inlinedCodeFilter());
   }
 
@@ -74,7 +74,7 @@ public abstract class MutatorTestBase {
   protected void createTesteeWith(final ClassByteArraySource source,
       final Predicate<MethodInfo> filter,
       final Collection<MethodMutatorFactory> mutators) {
-    this.engine = new GregorMutater(source, filter, mutators,
+    this.engine = new GregorMutater(source, filter, false, mutators,
         filteredClasses(), inlinedCodeFilter());
   }
 
@@ -86,7 +86,7 @@ public abstract class MutatorTestBase {
   protected void createTesteeWith(final Predicate<MethodInfo> filter,
       final Collection<String> loggingClasses,
       final Collection<MethodMutatorFactory> mutators) {
-    this.engine = new GregorMutater(new ClassPathByteArraySource(), filter,
+    this.engine = new GregorMutater(new ClassPathByteArraySource(), filter, false,
         mutators, loggingClasses, inlinedCodeFilter());
   }
 

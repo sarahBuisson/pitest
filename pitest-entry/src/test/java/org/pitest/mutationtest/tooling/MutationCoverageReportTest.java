@@ -121,6 +121,7 @@ public class MutationCoverageReportTest {
   private void mockMutationEngine() {
     when(
         this.mutationFactory.createEngine(anyBoolean(), any(Predicate.class),
+            anyBoolean(),
             anyCollection(), anyCollection(), anyBoolean())).thenReturn(
                 this.engine);
     when(this.engine.createMutator(any(ClassByteArraySource.class)))

@@ -211,6 +211,11 @@ public class MojoToReportOptionsConverterTest extends BasePitMojoTest {
     assertFalse(actualPredicate.apply("carx"));
   }
 
+  public void testParsesCommaListOfExcludeGeneratedLines() {
+    assertTrue(parseConfig("<excludeGeneratedLines>true</excludeGeneratedLines>").getExcludeGeneratedLines());
+    assertFalse(parseConfig("<excludeGeneratedLines>false</excludeGeneratedLines>").getExcludeGeneratedLines());
+  }
+
   public void testParsesVerboseFlag() {
     assertTrue(parseConfig("<verbose>true</verbose>").isVerbose());
     assertFalse(parseConfig("<verbose>false</verbose>").isVerbose());

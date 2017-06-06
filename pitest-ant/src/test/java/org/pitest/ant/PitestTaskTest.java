@@ -95,6 +95,13 @@ public class PitestTaskTest {
   }
 
   @Test
+  public void shouldPassExcludeGeneratedLinesOptionToJavaTask() {
+    this.pitestTask.setExcludeGeneratedLines("true");
+    this.pitestTask.execute(this.java);
+    verify(this.arg).setValue("--excludeGeneratedLines=true");
+  }
+
+  @Test
   public void shouldPassJvmArgsOptionToJavaTask() {
     this.pitestTask.setJvmArgs("-Da=a");
     this.pitestTask.execute(this.java);

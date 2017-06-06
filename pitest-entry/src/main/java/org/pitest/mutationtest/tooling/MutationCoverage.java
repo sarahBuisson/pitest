@@ -121,6 +121,7 @@ public class MutationCoverage {
     final MutationEngine engine = this.strategies.factory().createEngine(
         this.data.isMutateStaticInitializers(),
         Prelude.or(this.data.getExcludedMethods()),
+        this.data.getExcludeGeneratedLines(),
         this.data.getLoggingClasses(), this.data.getMutators(),
         this.data.isDetectInlinedCode());
 

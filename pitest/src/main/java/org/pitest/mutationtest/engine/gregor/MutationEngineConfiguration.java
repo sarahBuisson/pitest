@@ -29,4 +29,6 @@ public interface MutationEngineConfiguration {
 
   InlinedCodeFilter inlinedCodeDetector();
 
+  boolean excludeGeneratedLines();
+
 }

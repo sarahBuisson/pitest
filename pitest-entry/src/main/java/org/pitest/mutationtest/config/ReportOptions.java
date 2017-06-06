@@ -72,6 +72,7 @@ public class ReportOptions {
   private Collection<Predicate<String>>  targetClasses;
   private Collection<Predicate<String>>  excludedMethods                = Collections
       .emptyList();
+  private boolean  excludeGeneratedLines                = false;
 
   private Collection<Predicate<String>>  excludedClasses                = Collections
       .emptyList();
@@ -328,10 +329,19 @@ public class ReportOptions {
     return this.excludedMethods;
   }
 
+
   public void setExcludedMethods(
       final Collection<Predicate<String>> excludedMethods) {
     this.excludedMethods = excludedMethods;
   }
+  public boolean getExcludeGeneratedLines() {
+    return this.excludeGeneratedLines;
+  }
+
+  public void setExcludeGeneratedLines(boolean excludeGeneratedLines) {
+    this.excludeGeneratedLines = excludeGeneratedLines;
+  }
+
 
   public int getMaxMutationsPerClass() {
     return this.maxMutationsPerClass;

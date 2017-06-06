@@ -105,6 +105,7 @@ public class MojoToReportOptionsConverter {
     data.setMutateStaticInitializers(this.mojo.isMutateStaticInitializers());
     data.setExcludedMethods(globStringsToPredicates(this.mojo
         .getExcludedMethods()));
+    data.setExcludeGeneratedLines(this.mojo.getExcludeGeneratedLines());
     data.setExcludedClasses(globStringsToPredicates(this.mojo
         .getExcludedClasses()));
     data.setNumberOfThreads(this.mojo.getThreads());

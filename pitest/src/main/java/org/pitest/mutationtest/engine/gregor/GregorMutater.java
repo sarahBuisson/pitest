@@ -47,6 +47,7 @@ public class GregorMutater implements Mutater {
 
   private final Map<String, String>       computeCache   = new HashMap<String, String>();
   private final Predicate<MethodInfo>     filter;
+  private final boolean                   excludeGeneratedLines;
   private final ClassByteArraySource      byteSource;
   private final Set<MethodMutatorFactory> mutators       = new HashSet<MethodMutatorFactory>();
   private final Set<String>               loggingClasses = new HashSet<String>();
@@ -54,10 +55,12 @@ public class GregorMutater implements Mutater {
 
   public GregorMutater(final ClassByteArraySource byteSource,
       final Predicate<MethodInfo> filter,
+      final boolean excludeGeneratedLines,
       final Collection<MethodMutatorFactory> mutators,
       final Collection<String> loggingClasses,
       final InlinedCodeFilter inlinedCodeDetector) {
     this.filter = filter;
+    this.excludeGeneratedLines = excludeGeneratedLines;
     this.mutators.addAll(mutators);
     this.byteSource = byteSource;
     this.loggingClasses.addAll(FCollection.map(loggingClasses,
@@ -95,7 +98,7 @@ public class GregorMutater implements Mutater {
     final ClassReader first = new ClassReader(classToMutate);
     final NullVisitor nv = new NullVisitor();
     final MutatingClassVisitor mca = new MutatingClassVisitor(nv, context,
-        filterMethods(), classInfo, this.mutators);
+        filterMethods(), excludeGeneratedLines, classInfo, this.mutators);
 
     first.accept(mca, ClassReader.EXPAND_FRAMES);
 
@@ -105,7 +108,7 @@ public class GregorMutater implements Mutater {
   private PremutationClassInfo performPreScan(final ClassContext context,final byte[] classToMutate) {
     final ClassReader reader = new ClassReader(classToMutate);
 
-    final PreMutationAnalyser an = new PreMutationAnalyser(this.loggingClasses, context);
+    final PreMutationAnalyser an = new PreMutationAnalyser(this.excludeGeneratedLines, this.loggingClasses, context);
     reader.accept(an, 0);
     return an.getClassInfo();
 
@@ -126,7 +129,7 @@ public class GregorMutater implements Mutater {
     final ClassWriter w = new ComputeClassWriter(this.byteSource,
         this.computeCache, FrameOptions.pickFlags(bytes.value()));
     final MutatingClassVisitor mca = new MutatingClassVisitor(w, context,
-        filterMethods(), classInfo, FCollection.filter(this.mutators,
+        filterMethods(), excludeGeneratedLines, classInfo, FCollection.filter(this.mutators,
             isMutatorFor(id)));
     reader.accept(mca, ClassReader.EXPAND_FRAMES);
 

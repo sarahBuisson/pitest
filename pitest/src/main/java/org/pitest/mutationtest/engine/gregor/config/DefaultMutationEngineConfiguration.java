@@ -26,15 +26,18 @@ public class DefaultMutationEngineConfiguration implements
 MutationEngineConfiguration {
 
   private final Predicate<MethodInfo>                      methodFilter;
+  private final boolean                                    excludeGeneratedLines;
   private final Collection<String>                         doNotMutate;
   private final Collection<? extends MethodMutatorFactory> mutators;
   private final InlinedCodeFilter                          inlinedCodeDetector;
 
-  public DefaultMutationEngineConfiguration(final Predicate<MethodInfo> filter,
+  public DefaultMutationEngineConfiguration(final Predicate<MethodInfo> methodFilter,
+                                            final boolean excludeGeneratedLines,
       final Collection<String> loggingClasses,
       final Collection<? extends MethodMutatorFactory> mutators,
       final InlinedCodeFilter inlinedCodeDetector) {
-    this.methodFilter = filter;
+    this.methodFilter = methodFilter;
+    this.excludeGeneratedLines = excludeGeneratedLines;
     this.doNotMutate = loggingClasses;
     this.mutators = mutators;
     this.inlinedCodeDetector = inlinedCodeDetector;
@@ -58,6 +61,11 @@ MutationEngineConfiguration {
   @Override
   public InlinedCodeFilter inlinedCodeDetector() {
     return this.inlinedCodeDetector;
+  }
+
+  @Override
+  public boolean excludeGeneratedLines() {
+    return excludeGeneratedLines;
   }
 
 }
