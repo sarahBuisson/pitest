@@ -115,7 +115,7 @@ public abstract class ReportTestBase {
 
       final Timings timings = new Timings();
       final CodeSource code = new CodeSource(cps, coverageOptions
-          .getPitConfig().testClassIdentifier());
+          .getPitConfig().testClassIdentifier(), this.data.getSourceDirs());
 
       final CoverageGenerator coverageDatabase = new DefaultCoverageGenerator(
           null, coverageOptions, launchOptions, code,
