@@ -30,10 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.it.VerificationException;
 import org.apache.maven.it.Verifier;
 import org.apache.maven.it.util.ResourceExtractor;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.junit.rules.TestName;
 import org.pitest.support.DirectoriesOnlyWalker;
@@ -357,6 +354,21 @@ public class PitMojoIT {
     assertThat(actual).doesNotContain("status='RUN_ERROR'");
   }
 
+  @Test
+  public void shouldWorkWithLombok() throws Exception {
+    File testDir = prepare("/pit-lombok");
+
+    verifier.addCliOption("-DtimeoutConstant=10000");
+    verifier.executeGoal("test");
+    verifier.executeGoal("org.pitest:pitest-maven:mutationCoverage");
+    String actual = readResults(testDir);
+    assertThat(actual)
+            .contains(
+                    "<mutation detected='true' status='KILLED'><sourceFile>MyRequest.java</sourceFile><mutatedClass>com.example.MyRequest</mutatedClass><mutatedMethod>validate</mutatedMethod>");
+    assertThat(actual).doesNotContain("<mutatedMethod>equals</mutatedMethod");
+    assertThat(actual).doesNotContain("<mutatedMethod>hashCode</mutatedMethod");
+  }
+
   private static String readResults(File testDir) throws IOException {
     File mutationReport = new File(testDir.getAbsoluteFile() + File.separator
         + "target" + File.separator + "pit-reports" + File.separator
@@ -510,5 +522,6 @@ public class PitMojoIT {
         projectReportsHtmlContents
             .contains("<a href=\"pit-reports/index.html\" title=\"PIT Test Report\">PIT Test Report</a>"));
   }
+
 
 }
