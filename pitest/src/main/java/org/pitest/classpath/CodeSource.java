@@ -4,6 +4,7 @@ import static org.pitest.functional.FCollection.flatMap;
 import static org.pitest.functional.prelude.Prelude.and;
 import static org.pitest.functional.prelude.Prelude.not;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -29,17 +30,20 @@ public class CodeSource implements ClassInfoSource {
   private final Repository          classRepository;
   private final TestClassIdentifier testIdentifier;
 
+  private Collection<File>               sourceDirs;
+
   public CodeSource(final ProjectClassPaths classPath,
-      final TestClassIdentifier testIdentifier) {
+      final TestClassIdentifier testIdentifier, Collection<File>               sourceDirs) {
     this(classPath, new Repository(new ClassPathByteArraySource(
-        classPath.getClassPath())), testIdentifier);
+        classPath.getClassPath())), testIdentifier, sourceDirs);
   }
 
   CodeSource(final ProjectClassPaths classPath,
-      final Repository classRepository, final TestClassIdentifier testIdentifier) {
+      final Repository classRepository, final TestClassIdentifier testIdentifier, Collection<File>               sourceDirs) {
     this.classPath = classPath;
     this.classRepository = classRepository;
     this.testIdentifier = testIdentifier;
+    this.sourceDirs = sourceDirs;
   }
 
   public Collection<ClassInfo> getCode() {
@@ -66,6 +70,10 @@ public class CodeSource implements ClassInfoSource {
 
   public ProjectClassPaths getProjectPaths() {
     return this.classPath;
+  }
+
+  public Collection<File> getSourceDirs() {
+    return sourceDirs;
   }
 
   public Option<ClassName> findTestee(final String className) {
