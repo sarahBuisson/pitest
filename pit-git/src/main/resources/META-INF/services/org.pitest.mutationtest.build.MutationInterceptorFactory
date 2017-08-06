@@ -1,0 +1,8 @@
+org.pitest.mutationtest.build.intercept.staticinitializers.StaticInitializerInterceptorFactory
+org.pitest.mutationtest.build.intercept.staticinitializers.StaticInitializerFilterFactory
+org.pitest.mutationtest.build.intercept.annotations.ExcludedAnnotationInterceptorFactory
+generatedOld.GeneratedByAnnotationLineFilterFactory
+org.pitest.mutationtest.build.intercept.git.GitFileInterceptorFactory
+org.pitest.mutationtest.build.intercept.javafeatures.InlinedFinallyBlockFilterFactory
+org.pitest.mutationtest.build.intercept.javafeatures.TryWithResourcesFilterFactory
+org.pitest.mutationtest.build.intercept.logging.LoggingCallsFilterFactory
