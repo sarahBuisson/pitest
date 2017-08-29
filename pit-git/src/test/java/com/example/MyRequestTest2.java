@@ -10,7 +10,7 @@ public class MyRequestTest2 {
    @Test
    public void testValidateEmpty() {
      try {
-      MyRequest req = new MyRequest();
+       MyRequest2 req = new MyRequest2();
       req.validate();
       fail();
      } catch(IllegalStateException ex) {
